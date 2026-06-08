@@ -1,0 +1,16 @@
+{
+  "name": "@beme/shared",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "type-check": "tsc --noEmit",
+    "lint": "echo 'lint placeholder for shared'"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}
