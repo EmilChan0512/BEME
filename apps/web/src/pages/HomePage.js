@@ -1,3 +1,3 @@
 export function HomePage() {
-  return null;
+    return null;
 }

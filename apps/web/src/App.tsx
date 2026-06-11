@@ -1,47 +1,29 @@
-import { Link, NavLink, Route, Routes } from 'react-router-dom';
-import { HomePage } from './pages/HomePage';
-import { AboutPage } from './pages/AboutPage';
-import { LandingPage } from './pages/LandingPage';
-import { PricingPage } from './pages/PricingPage';
-import { ContactPage } from './pages/ContactPage';
-import { NotFoundPage } from './pages/NotFoundPage';
-
-const navItems = [
-  { to: '/', label: '首页' },
-  { to: '/landing', label: '落地页' },
-  { to: '/about', label: '关于我们' },
-  { to: '/pricing', label: '价格' },
-  { to: '/contact', label: '联系方式' },
-];
+import { useLocation } from 'react-router-dom';
+import { AppHeader } from './components/layout/AppHeader';
+import { RouteTransitionOverlay } from './components/transitions/RouteTransitionOverlay';
+import { RouteTransitionProgress } from './components/transitions/RouteTransitionProgress';
+import { RouteTransitionProvider } from './components/transitions/RouteTransitionProvider';
+import { AppRoutes } from './routes/AppRoutes';
 
 export function App() {
-  return (
-    <div className="app-shell">
-      <header className="header">
-        <Link className="brand" to="/">BEME</Link>
-        <nav className="nav">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-      </header>
+  const location = useLocation();
 
-      <main className="main">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/landing" element={<LandingPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </main>
-    </div>
+  return (
+    <RouteTransitionProvider location={location}>
+      {(displayLocation) => {
+        const isHomeRoute = displayLocation.pathname === '/';
+
+        return (
+          <div className="app-shell">
+            {isHomeRoute ? <AppHeader /> : null}
+            <RouteTransitionProgress />
+            <main className={isHomeRoute ? 'main main--home' : 'main main--log'}>
+              <AppRoutes location={displayLocation} />
+            </main>
+            <RouteTransitionOverlay />
+          </div>
+        );
+      }}
+    </RouteTransitionProvider>
   );
 }
