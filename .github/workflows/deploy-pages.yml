@@ -24,17 +24,25 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 20
           cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://registry.npmjs.org
+
+      - name: Configure npm registry
+        run: npm config set registry https://registry.npmjs.org
 
       - name: Install
-        run: npm install
+        run: npm install --package-lock=false
 
       - name: Build web
         run: npm run build -w @beme/web
 
       - name: SPA fallback
         run: cp apps/web/dist/index.html apps/web/dist/404.html
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
