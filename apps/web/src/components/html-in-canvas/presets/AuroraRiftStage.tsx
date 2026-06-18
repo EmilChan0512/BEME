@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 import { HtmlInCanvasStage, type HtmlInCanvasPreviewRenderer } from '../HtmlInCanvasStage';
 import { composeEffects } from '../effects/composeEffects';
 import { createDomLayerEffect } from '../effects/createDomLayerEffect';
@@ -13,6 +14,8 @@ import {
 import { createScrollChromaticEffect } from '../effects/createScrollChromaticEffect';
 import { createVignetteEffect } from '../effects/createVignetteEffect';
 import { createWhiteBackgroundEffect } from '../effects/createWhiteBackgroundEffect';
+import { useCanvasFlipRouteTransition } from '../../../hooks/animations/useCanvasFlipRouteTransition';
+import { useGlobalBgm } from '../../../hooks/audio/useGlobalBgm';
 import { usePointerTracker } from '../hooks/usePointerTracker';
 import '../selection/LaserSelectionTheme.css';
 import './AuroraRiftStage.css';
@@ -24,6 +27,13 @@ type AuroraRiftStageProps = {
   note: string;
   highlights: string[];
   tags: string[];
+};
+
+type AuroraRiftSourceProps = AuroraRiftStageProps & {
+  onReturnHome: (event: ReactMouseEvent<HTMLButtonElement>) => void;
+  onToggleMusic: () => void;
+  isMusicPlaying: boolean;
+  musicStatusText: string;
 };
 
 // 视觉调参区：
@@ -108,10 +118,32 @@ function AuroraRiftSource({
   note,
   highlights,
   tags,
-}: AuroraRiftStageProps) {
+  onReturnHome,
+  onToggleMusic,
+  isMusicPlaying,
+  musicStatusText,
+}: AuroraRiftSourceProps) {
   return (
     <section className="aurora-source hic-selection-theme--laser">
       <div className="aurora-source__paper">
+        <div className="aurora-source__actions">
+          <button
+            type="button"
+            className="aurora-source__action-button aurora-source__action-button--music"
+            onClick={onToggleMusic}
+            aria-pressed={isMusicPlaying}
+          >
+            {isMusicPlaying ? 'Pause BGM' : 'Play BGM'}
+          </button>
+          <button
+            type="button"
+            className="aurora-source__action-button aurora-source__action-button--portal"
+            onClick={onReturnHome}
+          >
+            Slice Back Home
+          </button>
+        </div>
+        <p className="aurora-source__music-status">{musicStatusText}</p>
         <p className="aurora-source__date">{date}</p>
         <h1 className="aurora-source__title">{title}</h1>
         <p className="aurora-source__summary">{summary}</p>
@@ -155,6 +187,9 @@ function AuroraRiftSource({
 }
 export function AuroraRiftStage(props: AuroraRiftStageProps) {
   const pointerRef = usePointerTracker();
+  const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const { isTransitioning, startCanvasFlipRouteTransition } = useCanvasFlipRouteTransition();
+  const { isPlaying: isMusicPlaying, statusText: musicStatusText, togglePlayback } = useGlobalBgm();
 
   const previewRenderer = useMemo<HtmlInCanvasPreviewRenderer>(() => {
     // feedbackEffect 不是直接返回一个函数，而是拆成：
@@ -237,13 +272,49 @@ export function AuroraRiftStage(props: AuroraRiftStageProps) {
     };
   }, [pointerRef]);
 
+  const handleReturnHome = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    if (isTransitioning) {
+      return;
+    }
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const originX = rect.left + rect.width * 0.5;
+    const originY = rect.top + rect.height * 0.5;
+
+    startCanvasFlipRouteTransition({
+      to: '/',
+      sourceCanvas: previewCanvasRef.current,
+      origin: {
+        x: originX / window.innerWidth,
+        y: originY / window.innerHeight,
+      },
+    });
+  };
+
   return (
     <HtmlInCanvasStage
       className="aurora-stage"
       surfaceClassName="aurora-stage__surface"
       sourceRootClassName="aurora-stage__source-root"
-      source={<AuroraRiftSource {...props} />}
-      fallback={<AuroraRiftSource {...props} />}
+      previewCanvasRef={previewCanvasRef}
+      source={
+        <AuroraRiftSource
+          {...props}
+          onReturnHome={handleReturnHome}
+          onToggleMusic={togglePlayback}
+          isMusicPlaying={isMusicPlaying}
+          musicStatusText={musicStatusText}
+        />
+      }
+      fallback={
+        <AuroraRiftSource
+          {...props}
+          onReturnHome={handleReturnHome}
+          onToggleMusic={togglePlayback}
+          isMusicPlaying={isMusicPlaying}
+          musicStatusText={musicStatusText}
+        />
+      }
       previewRenderer={previewRenderer}
       repaintEvents={['scroll', 'input', 'change', 'focusin', 'pointerdown', 'pointerup', 'keydown']}
     />

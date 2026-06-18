@@ -34,6 +34,58 @@
   background: #ffffff;
 }
 
+.aurora-source__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1.4rem;
+}
+
+.aurora-source__action-button {
+  position: sticky;
+  top: 24px;
+  z-index: 3;
+  padding: 12px 18px;
+  border: 1px solid rgba(83, 214, 255, 0.35);
+  border-radius: 999px;
+  color: #0f172a;
+  font: inherit;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(214, 246, 255, 0.9)),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.18), rgba(129, 140, 248, 0.12));
+  box-shadow:
+    0 12px 28px rgba(56, 189, 248, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+}
+
+.aurora-source__action-button:hover {
+  border-color: rgba(83, 214, 255, 0.52);
+  box-shadow:
+    0 16px 36px rgba(56, 189, 248, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+.aurora-source__action-button--music {
+  color: #0b1220;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(230, 244, 255, 0.92)),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.14), rgba(168, 85, 247, 0.16));
+}
+
+.aurora-source__music-status {
+  margin: -0.4rem 0 1rem;
+  color: rgba(17, 24, 39, 0.44);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
 .aurora-source__date {
   margin: 0;
   color: rgba(17, 24, 39, 0.48);
@@ -154,6 +206,15 @@
   .aurora-source__paper {
     min-height: 170vh;
     padding: 18vw 7vw 18vw;
+  }
+
+  .aurora-source__actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .aurora-source__music-status {
+    text-align: left;
   }
 
   .aurora-source__title {

@@ -32,6 +32,10 @@ function getIsSameLocation(left: Location, right: Location) {
   );
 }
 
+function getShouldSkipTransition(location: Location) {
+  return Boolean((location.state as { skipRouteTransition?: boolean } | null)?.skipRouteTransition);
+}
+
 function getDefaultEffect({
   from,
   to,
@@ -100,6 +104,23 @@ export function RouteTransitionProvider({
     }
 
     if (getIsSameLocation(displayLocation, location)) {
+      return;
+    }
+
+    if (getShouldSkipTransition(location)) {
+      timersRef.current.forEach((timer) => window.clearTimeout(timer));
+      setDisplayLocation(location);
+      setSnapshot((current) => ({
+        ...current,
+        phase: 'idle',
+        isTransitioning: false,
+        displayLocation: location,
+        currentPath: location.pathname,
+        previousPath: null,
+        nextPath: null,
+        durationMs,
+        coveringDurationMs,
+      }));
       return;
     }
 

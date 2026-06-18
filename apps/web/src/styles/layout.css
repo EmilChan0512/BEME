@@ -12,8 +12,8 @@
 }
 
 .main--home {
-  max-width: 1200px;
-  padding: 24px 16px 48px;
+  max-width: none;
+  padding: 0;
 }
 
 .main--log {

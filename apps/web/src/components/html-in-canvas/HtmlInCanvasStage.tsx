@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
+import type { MutableRefObject } from 'react';
 import './HtmlInCanvasStage.css';
 
 // 实验性 html-in-canvas 能力挂在 canvas 实例上的扩展字段。
@@ -31,6 +32,8 @@ export type HtmlInCanvasStageProps = {
   stagingCanvasClassName?: string;
   previewCanvasClassName?: string;
   sourceRootClassName?: string;
+  previewCanvasRef?: ((node: HTMLCanvasElement | null) => void) | MutableRefObject<HTMLCanvasElement | null>;
+  onPreviewFrame?: (canvas: HTMLCanvasElement) => void;
   source: ReactNode;
   fallback?: ReactNode;
   previewRenderer?: HtmlInCanvasPreviewRenderer;
@@ -57,6 +60,8 @@ export function HtmlInCanvasStage({
   stagingCanvasClassName,
   previewCanvasClassName,
   sourceRootClassName,
+  previewCanvasRef: previewCanvasExternalRef,
+  onPreviewFrame,
   source,
   fallback,
   previewRenderer,
@@ -143,12 +148,14 @@ export function HtmlInCanvasStage({
           width,
           height,
         });
+        onPreviewFrame?.(previewCanvas);
         return;
       }
 
       previewContext.setTransform(1, 0, 0, 1, 0, 0);
       previewContext.clearRect(0, 0, width, height);
       previewContext.drawImage(stagingCanvas, 0, 0, width, height);
+      onPreviewFrame?.(previewCanvas);
     };
 
     const paint = () => {
@@ -210,10 +217,25 @@ export function HtmlInCanvasStage({
       }
       sourceRoot.style.transform = '';
     };
-  }, [previewRenderer, repaintEvents]);
+  }, [onPreviewFrame, previewRenderer, repaintEvents]);
 
   // 只要支持 html-in-canvas，或者虽然不支持但有自定义预览渲染器，都显示 preview。
   const shouldShowPreview = isSupported || Boolean(previewRenderer);
+
+  const setPreviewCanvasRef = (node: HTMLCanvasElement | null) => {
+    previewCanvasRef.current = node;
+
+    if (!previewCanvasExternalRef) {
+      return;
+    }
+
+    if (typeof previewCanvasExternalRef === 'function') {
+      previewCanvasExternalRef(node);
+      return;
+    }
+
+    previewCanvasExternalRef.current = node;
+  };
 
   return (
     <section className={className ? `hic-stage ${className}` : 'hic-stage'}>
@@ -240,7 +262,7 @@ export function HtmlInCanvasStage({
         </canvas>
 
         <canvas
-          ref={previewCanvasRef}
+          ref={setPreviewCanvasRef}
           className={
             shouldShowPreview
               ? previewCanvasClassName
