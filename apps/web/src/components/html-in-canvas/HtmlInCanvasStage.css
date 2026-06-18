@@ -1,0 +1,59 @@
+.hic-stage {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.hic-surface {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hic-staging,
+.hic-fallback {
+  display: block;
+  width: 100%;
+  height: 100vh;
+}
+
+.hic-staging {
+  position: relative;
+  z-index: 1;
+}
+
+.hic-staging--hidden {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hic-preview {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  background: transparent;
+}
+
+.hic-preview--hidden {
+  opacity: 0;
+}
+
+.hic-source-root {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.hic-fallback {
+  position: relative;
+  z-index: 0;
+}
+

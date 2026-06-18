@@ -9,6 +9,33 @@ export type DateEntry = {
 
 export const dateEntries: DateEntry[] = [
   {
+    date: '20260618',
+    title: 'Aurora Rift / 极光裂隙',
+    summary: '做一页“极光裂隙”：DOM 是纸面，canvas 是夜空。你滚动的是 HTML，但你看到的是被画布再加工过的光。',
+    note:
+      '想象你在一张纸上写字，纸在动，光也在动。这个实验用双层 canvas 做了反馈回路、色散错位、扫描线与暗角，把普通 HTML 变成一张会呼吸的“夜空屏”。',
+    highlights: [
+      '反馈回路：上一帧被轻微缩放回写，形成拖影流体感',
+      '极光裂隙：pointer 驱动的发光带，screen/lighten 叠加',
+      '假粒子：用 deterministic hash 生成大量点，便宜但有效',
+      '色散错位：多次 drawImage 叠加模拟 chromatic aberration',
+    ],
+    tags: ['canvas', 'art', 'aurora', 'html-in-canvas'],
+  },
+  {
+    date: '20260616',
+    title: 'html in canvas is awsome',
+    summary: '今天想做一张像宣纸上晕开的页面，留白要多，字要轻，黑要有墨色的层次。',
+    note:
+      '页面不需要复杂结构，只想让它像一页被风翻开的日记。背景像淡墨铺开的雾，内容像毛笔写下的短句，安静地停在纸面中央。',
+    highlights: [
+      '把网页当成一张有呼吸感的纸面',
+      '让大面积留白先说话，文字退到后面',
+      '用几团墨迹和一枚印章撑起气氛',
+    ],
+    tags: ['ink', 'journal', 'canvas'],
+  },
+  {
     date: '2026-06-09',
     title: '把首页改成每日记录站',
     summary: '今天把导航和路由思路彻底改了，网站开始真正围绕日期组织内容。',

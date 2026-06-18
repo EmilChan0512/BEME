@@ -1,0 +1,179 @@
+.ink-canvas-stage {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 28%),
+    radial-gradient(circle at 82% 82%, rgba(124, 58, 237, 0.12), rgba(124, 58, 237, 0) 30%),
+    linear-gradient(180deg, #e8ece9 0%, #dde3e0 100%);
+}
+
+.ink-canvas-stage__surface {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(9, 11, 18, 0.98), rgba(8, 10, 16, 1));
+}
+
+.ink-canvas-stage__source-root {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.ink-canvas-stage__source-root::-webkit-scrollbar {
+  display: none;
+}
+
+.ink-canvas-source {
+  width: 100%;
+  min-height: 100%;
+  padding: 0;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 36%),
+    linear-gradient(180deg, rgba(255, 252, 248, 0.98), rgba(246, 243, 237, 0.96));
+}
+
+.ink-canvas-source__paper {
+  min-height: 155vh;
+  padding: 7vw 8vw 10vw;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(15, 23, 42, 0.06), rgba(15, 23, 42, 0) 22%),
+    radial-gradient(circle at 84% 76%, rgba(15, 23, 42, 0.05), rgba(15, 23, 42, 0) 20%);
+}
+
+.ink-canvas-source__date {
+  margin: 0;
+  color: rgba(17, 24, 39, 0.48);
+  font-size: 0.84rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.ink-canvas-source__title {
+  margin: 1.2rem 0 0;
+  color: #111827;
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 0.92;
+  font-weight: 500;
+}
+
+.ink-canvas-source__summary,
+.ink-canvas-source__paragraph {
+  max-width: 42rem;
+  color: rgba(17, 24, 39, 0.84);
+  line-height: 2;
+}
+
+.ink-canvas-source__summary {
+  margin: 2rem 0 0;
+  font-size: 1.12rem;
+}
+
+.ink-canvas-source__field {
+  max-width: 42rem;
+  margin-top: 2.2rem;
+}
+
+.ink-canvas-source__input,
+.ink-canvas-source__textarea {
+  width: 100%;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.56);
+  color: #111827;
+  font: inherit;
+  line-height: 1.7;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84);
+  outline: none;
+}
+
+.ink-canvas-source__input {
+  padding: 16px 18px;
+}
+
+.ink-canvas-source__textarea {
+  min-height: 220px;
+  padding: 18px;
+  resize: vertical;
+}
+
+.ink-canvas-source__input:focus,
+.ink-canvas-source__textarea:focus {
+  border-color: rgba(124, 58, 237, 0.36);
+  box-shadow:
+    0 0 0 4px rgba(124, 58, 237, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84);
+}
+
+.ink-canvas-source__paragraph {
+  margin: 2rem 0 0;
+  font-size: 1.04rem;
+  text-indent: 2em;
+}
+
+.ink-canvas-source__list {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 32rem;
+  margin: 2.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: rgba(17, 24, 39, 0.74);
+}
+
+.ink-canvas-source__list li {
+  position: relative;
+  padding-left: 18px;
+  line-height: 1.85;
+}
+
+.ink-canvas-source__list li::before {
+  content: '';
+  position: absolute;
+  top: 0.8em;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.52);
+}
+
+.ink-canvas-source__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2.4rem;
+}
+
+.ink-canvas-source__tags span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: rgba(17, 24, 39, 0.62);
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.ink-canvas-source__spacer {
+  height: 34vh;
+}
+
+@media (max-width: 720px) {
+  .ink-canvas-source__paper {
+    min-height: 165vh;
+    padding: 18vw 7vw 18vw;
+  }
+
+  .ink-canvas-source__title {
+    font-size: clamp(2.4rem, 12vw, 4.4rem);
+  }
+
+  .ink-canvas-source__summary,
+  .ink-canvas-source__paragraph {
+    max-width: none;
+  }
+}

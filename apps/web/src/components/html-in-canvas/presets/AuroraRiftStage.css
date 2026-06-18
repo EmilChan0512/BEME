@@ -1,0 +1,159 @@
+.aurora-stage {
+  /* White base: remove global halo/background tint so the preview colors read cleanly. */
+  background: #ffffff;
+}
+
+.aurora-stage__surface {
+  /* White surface: the preview canvas paints its own background each frame. */
+  background: #ffffff;
+}
+
+.aurora-stage__source-root {
+  scrollbar-width: none;
+}
+
+.aurora-stage__source-root::-webkit-scrollbar {
+  display: none;
+}
+
+.aurora-source {
+  width: 100%;
+  min-height: 100%;
+  padding: 0;
+  /* White DOM paper base: remove warm/yellow paper gradient for showcase screenshots. */
+  background: #ffffff;
+}
+
+.aurora-source__paper {
+  min-height: 165vh;
+  padding: 7.5vw 8vw 10vw;
+  /* Keep DOM readable but clean: no paper halos, no radial stains. */
+  background: #ffffff;
+}
+
+.aurora-source__date {
+  margin: 0;
+  color: rgba(17, 24, 39, 0.48);
+  font-size: 0.84rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.aurora-source__title {
+  margin: 1.2rem 0 0;
+  color: #111827;
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 0.92;
+  font-weight: 520;
+}
+
+.aurora-source__summary,
+.aurora-source__paragraph {
+  max-width: 46rem;
+  color: rgba(17, 24, 39, 0.84);
+  line-height: 2;
+}
+
+.aurora-source__summary {
+  margin: 2rem 0 0;
+  font-size: 1.12rem;
+}
+
+.aurora-source__divider {
+  width: 140px;
+  height: 1px;
+  margin: 2.2rem 0;
+  background: linear-gradient(90deg, rgba(17, 24, 39, 0.6), rgba(17, 24, 39, 0));
+}
+
+.aurora-source__paragraph {
+  margin: 1.6rem 0 0;
+  font-size: 1.04rem;
+  text-indent: 2em;
+}
+
+.aurora-source__card {
+  max-width: 46rem;
+  margin-top: 2.2rem;
+  padding: 18px 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.84),
+    0 14px 34px rgba(15, 23, 42, 0.06);
+}
+
+.aurora-source__card-title {
+  margin: 0;
+  font-size: 0.86rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(17, 24, 39, 0.62);
+}
+
+.aurora-source__list {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding-left: 18px;
+  color: rgba(17, 24, 39, 0.74);
+  line-height: 1.85;
+}
+
+.aurora-source__fragments {
+  display: grid;
+  gap: 0.9rem;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  color: rgba(17, 24, 39, 0.74);
+}
+
+.aurora-source__fragments li {
+  position: relative;
+  padding-left: 18px;
+  line-height: 1.85;
+}
+
+.aurora-source__fragments li::before {
+  content: '';
+  position: absolute;
+  top: 0.8em;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.52);
+}
+
+.aurora-source__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2.6rem;
+}
+
+.aurora-source__meta span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: rgba(17, 24, 39, 0.62);
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.aurora-source__spacer {
+  height: 36vh;
+}
+
+@media (max-width: 720px) {
+  .aurora-source__paper {
+    min-height: 170vh;
+    padding: 18vw 7vw 18vw;
+  }
+
+  .aurora-source__title {
+    font-size: clamp(2.4rem, 12vw, 4.4rem);
+  }
+}
