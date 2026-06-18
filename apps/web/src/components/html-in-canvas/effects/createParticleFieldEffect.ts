@@ -66,7 +66,6 @@ export function createParticleFieldEffect(options: ParticleFieldEffectOptions): 
       // softstep 让透明度衰减更柔和，避免粒子边缘显得太生硬。
       const alpha = softstep(1, 0, hash(seed + 2.1)) * (alphaBase + alphaSpeedBoost * speed);
       const size = sizeBase + sizeBoost * hash(seed + 3.9);
-
       ctx.fillStyle = `rgba(24, 144, 255, ${alpha})`;
       ctx.beginPath();
       ctx.arc(x, y, size, 0, Math.PI * 2);

@@ -10,17 +10,11 @@ export type DateEntry = {
 export const dateEntries: DateEntry[] = [
   {
     date: '20260618',
-    title: 'Aurora Rift / 极光裂隙',
-    summary: '做一页“极光裂隙”：DOM 是纸面，canvas 是夜空。你滚动的是 HTML，但你看到的是被画布再加工过的光。',
-    note:
-      '想象你在一张纸上写字，纸在动，光也在动。这个实验用双层 canvas 做了反馈回路、色散错位、扫描线与暗角，把普通 HTML 变成一张会呼吸的“夜空屏”。',
-    highlights: [
-      '反馈回路：上一帧被轻微缩放回写，形成拖影流体感',
-      '极光裂隙：pointer 驱动的发光带，screen/lighten 叠加',
-      '假粒子：用 deterministic hash 生成大量点，便宜但有效',
-      '色散错位：多次 drawImage 叠加模拟 chromatic aberration',
-    ],
-    tags: ['canvas', 'art', 'aurora', 'html-in-canvas'],
+    title: '既自以心为形役',
+    summary: '奚惆怅而独悲。',
+    note: '朝看花信催人，暮听寒潮卷梦。',
+    highlights: [],
+    tags: [],
   },
   {
     date: '20260616',

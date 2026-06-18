@@ -13,12 +13,28 @@ type ScrollChromaticEffectOptions = {
   decayMs: number;
   // 低于这个滚动位移就忽略，避免静止时文字也出现彩边。
   minDelta: number;
+  // 正向偏移图层的滤镜，用来控制偏色方向。
+  positiveFilter: string;
+  // 反向偏移图层的滤镜，用来控制另一侧偏色方向。
+  negativeFilter: string;
+  // 色散方向：左右或上下。
+  direction: 'horizontal' | 'vertical';
 };
 
 // 只在滚动时出现的色散效果。
 // 之前如果跟随鼠标触发，会把正文一起横向偏移，看起来像文字下方有残影。
 export function createScrollChromaticEffect(options: ScrollChromaticEffectOptions): CanvasEffect {
-  const { shiftBase, shiftSpeedBoost, shiftPulseBoost, alpha, decayMs, minDelta } = options;
+  const {
+    shiftBase,
+    shiftSpeedBoost,
+    shiftPulseBoost,
+    alpha,
+    decayMs,
+    minDelta,
+    positiveFilter,
+    negativeFilter,
+    direction,
+  } = options;
   let previousScrollTop = 0;
   let lastScrollAt = 0;
   let scrollVelocity = 0;
@@ -50,10 +66,18 @@ export function createScrollChromaticEffect(options: ScrollChromaticEffectOption
     ctx.save();
     ctx.globalCompositeOperation = 'multiply';
     ctx.globalAlpha = alpha * scrollInfluence;
-    ctx.filter = 'hue-rotate(22deg) saturate(1.1)';
-    ctx.drawImage(stagingCanvas, shift, 0, width, height);
-    ctx.filter = 'hue-rotate(-18deg) saturate(1.1)';
-    ctx.drawImage(stagingCanvas, -shift, 0, width, height);
+    ctx.filter = positiveFilter;
+    if (direction === 'vertical') {
+      ctx.drawImage(stagingCanvas, 0, shift, width, height);
+    } else {
+      ctx.drawImage(stagingCanvas, shift, 0, width, height);
+    }
+    ctx.filter = negativeFilter;
+    if (direction === 'vertical') {
+      ctx.drawImage(stagingCanvas, 0, -shift, width, height);
+    } else {
+      ctx.drawImage(stagingCanvas, -shift, 0, width, height);
+    }
     ctx.restore();
   };
 }

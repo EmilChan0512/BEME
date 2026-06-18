@@ -7,11 +7,13 @@ type VignetteEffectOptions = {
   outerRatio: number;
   // 暗角最终强度。
   alpha: number;
+  // 暗角颜色。
+  color: string;
 };
 
 // 给画面边缘压一点暗角，让注意力更多停留在中心区域。
 export function createVignetteEffect(options: VignetteEffectOptions): CanvasEffect {
-  const { innerRatio, outerRatio, alpha } = options;
+  const { innerRatio, outerRatio, alpha, color } = options;
 
   return ({ ctx, width, height }) => {
     const vignette = ctx.createRadialGradient(
@@ -23,9 +25,21 @@ export function createVignetteEffect(options: VignetteEffectOptions): CanvasEffe
       Math.max(width, height) * outerRatio,
     );
     vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    vignette.addColorStop(1, `rgba(0, 0, 0, ${alpha})`);
+    vignette.addColorStop(1, applyAlphaToRgbColor(color, alpha));
 
     ctx.fillStyle = vignette;
     ctx.fillRect(0, 0, width, height);
   };
+}
+
+function applyAlphaToRgbColor(color: string, alpha: number) {
+  if (color.startsWith('rgb(') && color.endsWith(')')) {
+    return color.replace(/^rgb\((.+)\)$/, `rgba($1, ${alpha})`);
+  }
+
+  if (color.startsWith('rgba(')) {
+    return color;
+  }
+
+  return color;
 }

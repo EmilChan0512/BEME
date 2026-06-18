@@ -32,6 +32,7 @@ export type HtmlInCanvasStageProps = {
   stagingCanvasClassName?: string;
   previewCanvasClassName?: string;
   sourceRootClassName?: string;
+  sourceRootRef?: ((node: HTMLElement | null) => void) | MutableRefObject<HTMLElement | null>;
   previewCanvasRef?: ((node: HTMLCanvasElement | null) => void) | MutableRefObject<HTMLCanvasElement | null>;
   onPreviewFrame?: (canvas: HTMLCanvasElement) => void;
   source: ReactNode;
@@ -60,6 +61,7 @@ export function HtmlInCanvasStage({
   stagingCanvasClassName,
   previewCanvasClassName,
   sourceRootClassName,
+  sourceRootRef: sourceRootExternalRef,
   previewCanvasRef: previewCanvasExternalRef,
   onPreviewFrame,
   source,
@@ -237,6 +239,21 @@ export function HtmlInCanvasStage({
     previewCanvasExternalRef.current = node;
   };
 
+  const setSourceRootRef = (node: HTMLElement | null) => {
+    sourceRootRef.current = node;
+
+    if (!sourceRootExternalRef) {
+      return;
+    }
+
+    if (typeof sourceRootExternalRef === 'function') {
+      sourceRootExternalRef(node);
+      return;
+    }
+
+    sourceRootExternalRef.current = node;
+  };
+
   return (
     <section className={className ? `hic-stage ${className}` : 'hic-stage'}>
       <div className={surfaceClassName ? `hic-surface ${surfaceClassName}` : 'hic-surface'}>
@@ -254,7 +271,7 @@ export function HtmlInCanvasStage({
           aria-label="html-in-canvas staging surface"
         >
           <section
-            ref={sourceRootRef}
+            ref={setSourceRootRef}
             className={sourceRootClassName ? `hic-source-root ${sourceRootClassName}` : 'hic-source-root'}
           >
             {source}
