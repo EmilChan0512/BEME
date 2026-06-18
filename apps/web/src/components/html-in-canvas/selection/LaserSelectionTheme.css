@@ -1,0 +1,16 @@
+/* 激光主题选中态：
+   这里只负责压掉浏览器默认蓝色选区，不再自己铺青色底。
+   真正的激光高亮交给 preview canvas 上的 createLaserSelectionEffect。 */
+.hic-selection-theme--laser::selection,
+.hic-selection-theme--laser *::selection {
+  color: inherit;
+  background: transparent;
+  text-shadow: none;
+}
+
+.hic-selection-theme--laser::-moz-selection,
+.hic-selection-theme--laser *::-moz-selection {
+  color: inherit;
+  background: transparent;
+  text-shadow: none;
+}

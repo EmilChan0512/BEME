@@ -11,6 +11,8 @@ type FullscreenInkCanvasStageProps = {
   tags: string[];
 };
 
+// 水墨 preset 的真实 DOM 内容。
+// 输入框和文本区域都保留真实可交互能力，再由上层 preview 做“墨色观看”。
 function InkSourceContent({
   date,
   title,
@@ -72,15 +74,18 @@ export function FullscreenInkCanvasStage(props: FullscreenInkCanvasStageProps) {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, width, height);
 
+      // 深色底纸，让后面的紫/绿漂移更像湿墨在夜色中晕开。
       ctx.fillStyle = '#04050a';
       ctx.fillRect(0, 0, width, height);
 
       ctx.save();
+      // 先把 DOM 主层压进去，作为所有漂移和叠色的基础。
       ctx.filter = 'contrast(1.2) saturate(0.58) brightness(0.98)';
       ctx.globalAlpha = 0.94;
       ctx.drawImage(stagingCanvas, 0, 0, width, height);
       ctx.restore();
 
+      // 两组不同频率的漂移，模拟墨层被水波轻微推开的感觉。
       const driftA = Math.sin(time / 760) * Math.max(2, width * 0.0028);
       const driftB = Math.cos(time / 1180) * Math.max(1.5, width * 0.0018);
 

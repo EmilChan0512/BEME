@@ -2,6 +2,7 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
+  /* 外层舞台自己不滚动，滚动交给 sourceRoot。 */
   overflow: hidden;
 }
 
@@ -39,6 +40,7 @@
   height: 100%;
   display: block;
   pointer-events: none;
+  /* 预览层只负责“看起来像有一层玻璃/滤镜”，不拦截真实交互。 */
   background: transparent;
 }
 
@@ -49,6 +51,7 @@
 .hic-source-root {
   width: 100%;
   height: 100%;
+  /* 真正的 DOM 内容在这里滚动，所以键盘、输入、选区能力都还在。 */
   overflow: auto;
 }
 
@@ -56,4 +59,3 @@
   position: relative;
   z-index: 0;
 }
-

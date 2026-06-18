@@ -1,20 +1,25 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import './HtmlInCanvasStage.css';
 
+// 实验性 html-in-canvas 能力挂在 canvas 实例上的扩展字段。
 type HTMLInCanvasCanvas = HTMLCanvasElement & {
   onpaint?: ((event: Event) => void) | null;
   requestPaint?: () => void;
   layoutSubtree?: boolean;
 };
 
+// 实验性 drawElementImage / reset 可能出现在 2D context 上。
 type DrawElementImageContext = CanvasRenderingContext2D & {
   reset?: () => void;
   drawElementImage?: (element: Element, dx: number, dy: number) => DOMMatrix;
 };
 
+// 预览层自定义渲染器。
+// width / height 是预览层的真实像素尺寸，不是 CSS 像素。
 export type HtmlInCanvasPreviewRenderer = (args: {
   ctx: CanvasRenderingContext2D;
   stagingCanvas: HTMLCanvasElement;
+  sourceRoot: HTMLElement;
   time: number;
   width: number;
   height: number;
@@ -42,6 +47,10 @@ export type HtmlInCanvasStageProps = {
   >;
 };
 
+// 通用 html-in-canvas 舞台：
+// 1. 底层 source 仍然是真实 DOM，可滚动、可输入、可访问；
+// 2. staging canvas 负责捕获 DOM；
+// 3. preview canvas 负责做二次渲染与特效叠加。
 export function HtmlInCanvasStage({
   className,
   surfaceClassName,
@@ -76,6 +85,7 @@ export function HtmlInCanvasStage({
       return;
     }
 
+    // 同时满足 requestPaint + drawElementImage，才算真的能走 html-in-canvas 路径。
     const canUseHtmlInCanvas =
       Boolean(stagingContext) &&
       typeof stagingCanvas.requestPaint === 'function' &&
@@ -84,6 +94,7 @@ export function HtmlInCanvasStage({
     setIsSupported(canUseHtmlInCanvas);
 
     if (canUseHtmlInCanvas) {
+      // layoutsubtree 是提案中的提示：告诉浏览器这个子树会被单独参与绘制。
       stagingCanvas.setAttribute('layoutsubtree', '');
       stagingCanvas.layoutSubtree = true;
     }
@@ -95,12 +106,14 @@ export function HtmlInCanvasStage({
         return;
       }
 
+      // 在支持实验能力时，不直接手动画，而是请求浏览器重新触发 onpaint。
       stagingCanvas.requestPaint?.();
     };
 
     const resizeCanvases = () => {
       const rect = stagingCanvas.getBoundingClientRect();
       const ratio = window.devicePixelRatio || 1;
+      // width / height 是实际绘制分辨率，所以要乘 DPR，避免高分屏发糊。
       const width = Math.max(1, Math.round(rect.width * ratio));
       const height = Math.max(1, Math.round(rect.height * ratio));
 
@@ -121,9 +134,11 @@ export function HtmlInCanvasStage({
       const height = previewCanvas.height;
 
       if (previewRenderer) {
+        // 交给外部 preset 自己定义如何把 staging canvas 重新“看一遍”。
         previewRenderer({
           ctx: previewContext,
           stagingCanvas,
+          sourceRoot,
           time,
           width,
           height,
@@ -144,13 +159,16 @@ export function HtmlInCanvasStage({
       if (typeof stagingContext.reset === 'function') {
         stagingContext.reset();
       } else {
+        // 老一点的实验实现没有 reset，就手动归位并清空。
         stagingContext.setTransform(1, 0, 0, 1, 0, 0);
         stagingContext.clearRect(0, 0, stagingCanvas.width, stagingCanvas.height);
       }
 
+      // 把真实 DOM 直接绘制进 staging canvas。
       const transform = stagingContext.drawElementImage?.(sourceRoot, 0, 0);
 
       if (transform) {
+        // 某些实现会返回 DOM 需要补上的 transform，用于保持视觉位置一致。
         sourceRoot.style.transform = transform.toString();
       }
 
@@ -158,6 +176,7 @@ export function HtmlInCanvasStage({
     };
 
     const animate = (time: number) => {
+      // fallback 模式下没有 onpaint，就持续驱动 previewRenderer。
       renderPreview(time);
       animationFrameId = window.requestAnimationFrame(animate);
     };
@@ -169,14 +188,15 @@ export function HtmlInCanvasStage({
       stagingCanvas.onpaint = paint;
     }
 
+    // sourceRoot 发生滚动、输入、键盘等交互时，请求重新捕获 DOM。
     for (const eventName of repaintEvents) {
       sourceRoot.addEventListener(eventName, requestStagePaint, { passive: eventName === 'scroll' });
     }
 
     resizeCanvases();
 
-    // Even when html-in-canvas isn't available, keep the preview alive if a custom renderer is
-    // provided. This makes presets visibly "do something" in non-flag browsers too.
+    // 即使浏览器没开 html-in-canvas，只要外部传了 previewRenderer，
+    // 也继续驱动预览层，让 preset 在非实验环境里至少还能展示视觉效果。
     if (previewRenderer) {
       animationFrameId = window.requestAnimationFrame(animate);
     }
@@ -192,6 +212,7 @@ export function HtmlInCanvasStage({
     };
   }, [previewRenderer, repaintEvents]);
 
+  // 只要支持 html-in-canvas，或者虽然不支持但有自定义预览渲染器，都显示 preview。
   const shouldShowPreview = isSupported || Boolean(previewRenderer);
 
   return (
