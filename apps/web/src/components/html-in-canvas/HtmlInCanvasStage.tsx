@@ -204,9 +204,10 @@ export function HtmlInCanvasStage({
 
     resizeCanvases();
 
-    // 即使浏览器没开 html-in-canvas，只要外部传了 previewRenderer，
-    // 也继续驱动预览层，让 preset 在非实验环境里至少还能展示视觉效果。
-    if (previewRenderer) {
+    // 预览层依赖 staging canvas 捕获到真实 DOM。
+    // 在不支持 html-in-canvas 的浏览器里继续驱动 preview，
+    // 只会得到一层空白/特效底板，反而把 fallback 内容盖住。
+    if (canUseHtmlInCanvas && previewRenderer) {
       animationFrameId = window.requestAnimationFrame(animate);
     }
 
@@ -221,8 +222,8 @@ export function HtmlInCanvasStage({
     };
   }, [onPreviewFrame, previewRenderer, repaintEvents]);
 
-  // 只要支持 html-in-canvas，或者虽然不支持但有自定义预览渲染器，都显示 preview。
-  const shouldShowPreview = isSupported || Boolean(previewRenderer);
+  // preview 依赖 html-in-canvas 捕获结果；不支持时直接展示真实 DOM fallback。
+  const shouldShowPreview = isSupported;
 
   const setPreviewCanvasRef = (node: HTMLCanvasElement | null) => {
     previewCanvasRef.current = node;
